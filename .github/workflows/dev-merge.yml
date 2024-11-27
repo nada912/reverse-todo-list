@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - dev
-     # - main
 
 jobs:
   build-and-test-dev:
@@ -23,25 +22,21 @@ jobs:
         run: |
           cd backend
           npm install
-          sudo npm test
 
       - name: Install Frontend Dependencies
         run: |
           cd frontend
           npm install
       
-      #- name: Fix Jest Permissions
-      #  run: chmod +x ./node_modules/.bin/jest
-        
-      #- name: Run Backend Unit Tests
-      #  run: |
-      #    cd backend
-      #    sudo npm test
+      - name: Run Backend Unit Tests
+        run: |
+          cd backend
+          sudo npm test
 
       - name: Run Frontend Unit Tests
         run: |
           cd frontend
-          sudo npm test
+          npm test
 
       - name: Merge dev into main
         if: ${{ success() }}
