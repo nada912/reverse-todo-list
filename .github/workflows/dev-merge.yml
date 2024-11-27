@@ -40,7 +40,7 @@ jobs:
       - name: Run Frontend Unit Tests
         run: |
           cd frontend
-          npm test
+          sudo npm test
 
       - name: Merge dev into main
         if: ${{ success() }}
