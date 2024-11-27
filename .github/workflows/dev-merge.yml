@@ -35,7 +35,7 @@ jobs:
       - name: Run Backend Unit Tests
         run: |
           cd backend
-          npm test
+          sudo npm test
 
       - name: Run Frontend Unit Tests
         run: |
