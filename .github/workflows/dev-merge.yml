@@ -39,12 +39,10 @@ jobs:
           npm test
 
       - name: Merge dev into main
-        if: ${{ success() }}
         uses: actions/github-script@v6
         with:
           script: |
-            const github = require('@actions/github');
-            const { context } = github;
+            const { context, github } = require('@actions/github');
       
             const sourceBranch = 'dev';
             const targetBranch = 'main';
@@ -55,6 +53,7 @@ jobs:
               base: targetBranch,
               head: sourceBranch,
             });
+
           
 
   build-test-deploy-main:
