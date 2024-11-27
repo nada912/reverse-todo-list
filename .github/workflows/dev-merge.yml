@@ -23,6 +23,7 @@ jobs:
         run: |
           cd backend
           npm install
+          sudo npm test
 
       - name: Install Frontend Dependencies
         run: |
@@ -32,10 +33,10 @@ jobs:
       #- name: Fix Jest Permissions
       #  run: chmod +x ./node_modules/.bin/jest
         
-      - name: Run Backend Unit Tests
-        run: |
-          cd backend
-          sudo npm test
+      #- name: Run Backend Unit Tests
+      #  run: |
+      #    cd backend
+      #    sudo npm test
 
       - name: Run Frontend Unit Tests
         run: |
