@@ -1,17 +1,10 @@
 name: CI/CD Pipeline
 
 on:
-  # Trigger the workflow on pushes to dev and main branches
   push:
     branches:
       - dev
       - main
-
-  # Trigger the main branch workflow when the dev-to-main merge completes
-  workflow_run:
-    workflows: ["CI/CD Pipeline"]
-    types:
-      - completed
 
 jobs:
   build-and-test-dev:
@@ -62,11 +55,16 @@ jobs:
 
   build-test-deploy-main:
     needs: build-and-test-dev
-    if: ${{ github.ref == 'refs/heads/main' || github.event.workflow_run.conclusion == 'success' }}
+    if: github.ref == 'refs/heads/dev' && success()
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+
+      - name: Fetch the main branch
+        run: |
+          git fetch origin main
+          git checkout main
 
       - name: Build Docker Images
         run: |
