@@ -1,3 +1,5 @@
+# This is a new feature being developed in the 'my-feature' branch
+
 version: '3'
 
 services:
