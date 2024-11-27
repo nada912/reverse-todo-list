@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - dev
-      - main
 
 jobs:
   build-and-test-dev:
@@ -29,13 +28,10 @@ jobs:
           cd frontend
           npm install
       
-      - name: Fix Jest Permissions
-        run: chmod +x ./node_modules/.bin/jest
-        
       - name: Run Backend Unit Tests
         run: |
           cd backend
-          npx jest
+          sudo npm test
 
       - name: Run Frontend Unit Tests
         run: |
@@ -43,13 +39,9 @@ jobs:
           npm test
 
       - name: Merge dev into main
-        if: ${{ success() }}
         uses: actions/github-script@v6
         with:
           script: |
-            const github = require('@actions/github');
-            const { context } = github;
-      
             const sourceBranch = 'dev';
             const targetBranch = 'main';
       
@@ -59,8 +51,7 @@ jobs:
               base: targetBranch,
               head: sourceBranch,
             });
-          
-
+      
   build-test-deploy-main:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
