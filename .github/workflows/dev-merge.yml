@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - dev
-      - main
+     # - main
 
 jobs:
   build-and-test-dev:
@@ -29,13 +29,13 @@ jobs:
           cd frontend
           npm install
       
-      - name: Fix Jest Permissions
-        run: chmod +x ./node_modules/.bin/jest
+      #- name: Fix Jest Permissions
+      #  run: chmod +x ./node_modules/.bin/jest
         
       - name: Run Backend Unit Tests
         run: |
           cd backend
-          npx jest
+          npm test
 
       - name: Run Frontend Unit Tests
         run: |
