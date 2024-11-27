@@ -79,9 +79,9 @@ jobs:
       - name: Push Docker Images
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_HUB_TOKEN }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
-          echo $DOCKER_HUB_TOKEN | docker login --username $DOCKER_USERNAME --password-stdin
+          echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
           docker-compose push
 
       - name: Run Backend Unit Tests
