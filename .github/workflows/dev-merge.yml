@@ -52,7 +52,6 @@ jobs:
               head: sourceBranch,
             });
       
-
   build-test-deploy-main:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
