@@ -32,7 +32,7 @@ jobs:
       - name: Run Backend Unit Tests
         run: |
           cd backend
-          npm test
+          npx jest
 
       - name: Run Frontend Unit Tests
         run: |
