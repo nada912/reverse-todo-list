@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - dev
+      - main
 
 jobs:
   build-and-test-dev:
@@ -27,11 +28,11 @@ jobs:
         run: |
           cd frontend
           npm install
-      
+
       - name: Run Backend Unit Tests
         run: |
           cd backend
-          sudo npm test
+          npm test
 
       - name: Run Frontend Unit Tests
         run: |
@@ -39,25 +40,31 @@ jobs:
           npm test
 
       - name: Merge dev into main
+        if: ${{ success() }}
         uses: actions/github-script@v6
         with:
           script: |
             const sourceBranch = 'dev';
             const targetBranch = 'main';
-      
             await github.rest.repos.merge({
               owner: context.repo.owner,
               repo: context.repo.repo,
               base: targetBranch,
               head: sourceBranch,
             });
-      
+
   build-test-deploy-main:
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    needs: build-and-test-dev
+    if: github.ref == 'refs/heads/dev' && success()
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+
+      - name: Fetch the main branch
+        run: |
+          git fetch origin main
+          git checkout main
 
       - name: Build Docker Images
         run: |
@@ -66,7 +73,7 @@ jobs:
       - name: Push Docker Images
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_HUB_TOKEN}}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
           docker-compose push
