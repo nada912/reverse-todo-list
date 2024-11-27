@@ -78,21 +78,6 @@ jobs:
           npm install
           npm test
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install E2E Test Dependencies
-        run: |
-          cd e2e-tests
-          npm install
-
-      - name: Run E2E Tests
-        run: |
-          cd e2e-tests
-          npx mocha test.js
-
       - name: Install Docker Compose
         run: |
           sudo curl -L "https://github.com/docker/compose/releases/download/v2.22.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -107,6 +92,26 @@ jobs:
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/frontend:latest ./frontend
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install E2E Test Dependencies
+        run: |
+          cd e2e-tests
+          npm install
+
+      - name: Start Docker Containers
+        run: |
+          # Start the containers so the tests can connect to them
+          docker-compose up -d  # Run in detached mode (background)
+
+      - name: Run E2E Tests
+        run: |
+          cd e2e-tests
+          npx mocha test.js
+
       - name: Push Docker Images
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -115,3 +120,4 @@ jobs:
           echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
           docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
+
